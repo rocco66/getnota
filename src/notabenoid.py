@@ -9,7 +9,7 @@ from datetime import datetime
 import lxml.html
 
 
-class Notabenoid(object):
+class Notabenoid():
     '''
     Class for receiving book from notabenoid.com.
     '''
@@ -33,7 +33,6 @@ class Notabenoid(object):
         self.book_name = info.find('h1').text
         self.img_url = info.find('img').attrib['src']
         
-        
     def get_book_name(self):
         '''
         Return book name.
@@ -52,26 +51,31 @@ class Notabenoid(object):
         '''
         return datetime.now()
     
-    def chapters_links(self):
+    def get_chapters_links(self):
         '''
         Generator for chapter links.
         '''
+        links = []
         chap_table = self.main_page.get_element_by_id(Notabenoid.CHAP_LIST_ID)
         for tr in chap_table:
             res = tr.attrib.get('id')
             if res:
                 td = tr[-1]
                 a = td[0]
-                yield a.attrib['href']
+                links.append(a.attrib['href'])
+        return links
              
     def end_of_chapter(self):
+        '''
+        End of chapter object(trigger). Returned by content generator. 
+        '''
         return None     
         
     def content(self):
         '''
         Generator for lines from book.
         '''
-        for cl in self.chapters_links():
+        for cl in self.get_chapters_links():
             url = Notabenoid.NB_URL + cl
             page = lxml.html.parse(url).getroot()
             form = page.forms[-1]
@@ -81,6 +85,25 @@ class Notabenoid(object):
                 if Notabenoid.END_OF_CHAPTER == p.text:
                     yield self.end_of_chapter()
                 yield p.text
-
+    
+    def get_chapter(self, target_chap):
+        '''
+        Generator for chapter.
+        '''
+        current_chap = 1
+        for l in self.content():
+            if l == self.end_of_chapter():
+                if current_chap == target_chap:
+                    return
+                else:
+                    current_chap += 1
+            else:
+                yield l
+     
+    def get_chapter_number(self):
+        '''
+        Return number of chapter in book.
+        '''
+        return len(self.get_chapters_links())
         
         
