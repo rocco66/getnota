@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 26.08.2011
 
@@ -18,7 +19,7 @@ class Notabenoid():
     BOOK_INFO_ID = 'Info'
     CHAP_LIST_ID = 'ChapList'
     CONTENT_ID = 'content'
-    END_OF_CHAPTER = 'Переведено на сайте www.notabenoid.com'
+    END_OF_CHAPTER = r'Переведено на сайте www.notabenoid.com'
 
     def __init__(self, book_id):
         '''
@@ -61,8 +62,11 @@ class Notabenoid():
             res = tr.attrib.get('id')
             if res:
                 td = tr[-1]
-                a = td[0]
-                links.append(a.attrib['href'])
+                try:
+                    a = td[0]
+                    links.append(a.attrib['href'])
+                except IndexError:
+                    break
         return links
              
     def end_of_chapter(self):
@@ -84,6 +88,7 @@ class Notabenoid():
             for p in content:
                 if Notabenoid.END_OF_CHAPTER == p.text:
                     yield self.end_of_chapter()
+                    break
                 yield p.text
     
     def get_chapter(self, target_chap):
@@ -97,7 +102,7 @@ class Notabenoid():
                     return
                 else:
                     current_chap += 1
-            else:
+            elif current_chap == target_chap:
                 yield l
      
     def get_chapter_number(self):

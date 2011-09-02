@@ -6,6 +6,7 @@ Created on 31.08.2011
 
 from lxml import etree
 import lxml.html
+import os
 
 
 class FB2Creator():
@@ -13,56 +14,68 @@ class FB2Creator():
     Class for FB2 creation.
     '''
 
-    scheme = 'FictionBook2.xsd'
+    book_dir = 'books'
+    scheme = 'docs/FictionBook2.xsd'
 
     def __init__(self, name):
         '''
         Constructor
         '''
         self.name = name + '.fb2'
-        self.data = []
+        self.book_name = FB2Creator.book_dir + '/' + self.name
+        if not os.path.exists(self.book_dir):
+            os.mkdir(self.book_dir)
+        self.gen = None
         self.root = etree.Element('FictionBook')
         self.root.set("xmlns", "http://www.gribuser.ru/xml/fictionbook/2.0") 
         
-    def add_data(self, data):
-        '''
-        Add text data for writing in fb2 book.
-        '''
-        self.data.append(data)
+    def set_end_of_chapter_symbol(self, symbol):
+        self.eoc_sym = symbol
         
-    def create(self):
+    def create_file(self):
         '''
         Create fb2 file.
         '''
         self.__create_header()
-        for d in self.data:
-                self.__create_data(d)
+        self.__create_data()
         self.__write_etree()        
         return self.__isValid()
+    
+    def set_generator(self, gen):
+        self.gen = gen
         
+    def set_notifier(self, n):
+        self.notifier = n    
+    
     def __write_etree(self):
         '''
         Write xml to fb2 file.
         '''
         et = etree.ElementTree(self.root)
-        et.write(self.name,
+        et.write(self.book_name,
                  xml_declaration=True,
                  encoding='utf-8')
         return True
          
         
-    def __create_data(self, data):
+    def __create_data(self):
         '''
         Create text data from data for fb2.
         '''
         body = etree.SubElement(self.root, 'body')
-        #может еще надо применить тэг p к содержимому?
         title = etree.SubElement(body, 'title')
         etree.SubElement(title, 'p').text = self.name.split('.')[0]
         section = etree.SubElement(body, 'section')
-        for d in self.data:
-            s = etree.SubElement(section, 'section')
-            etree.SubElement(s, 'p').text = d
+        s = etree.SubElement(section, 'section')
+        #что то многовато глав получается, надо проследить чтобы лишних None не поступало от генератора
+        chap = 0
+        for d in self.gen:
+            if d == self.eoc_sym:
+                s = etree.SubElement(section, 'section')
+                chap += 1
+                self.notifier('chapter ' + str(chap))
+            else:
+                etree.SubElement(s, 'p').text = d
         
              
     def __create_header(self):
@@ -96,5 +109,5 @@ class FB2Creator():
         '''
         xmlschema_doc = etree.parse(open(FB2Creator.scheme, mode='r'))
         xmlschema = etree.XMLSchema(xmlschema_doc)
-        book = etree.parse(open(self.name, mode='r'))
+        book = etree.parse(open(self.book_name, mode='r'))
         return xmlschema.validate(book)

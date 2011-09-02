@@ -52,6 +52,7 @@ class Test(unittest.TestCase):
         self.assertEqual(creator.create(), 
                          True,
                          "Can't create FB2 file")
+
         
         
 if __name__ == "__main__":
