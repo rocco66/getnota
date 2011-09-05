@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     def testGetFirstLine(self):
         nb = Notabenoid('19980')
         self.assertEqual(nb.content().__next__(), 
-                         'A DANCE WITH DRAGONS / ТАНЕЦ С ДРАКОНАМИ A CAVIL ON CHRONOLOGY',
+                         'ПОЯСНЕНИЯ К ХРОНОЛОГИИ\r\n',
                          'wrong first book line')
     
     def testGetThirdChapter(self):
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
         for l in nb.get_chapter(3):
             pass
         self.assertEqual(l, 
-                         '.',
+                         '.\r\n',
                          'wrong first chapter')
         
     def testGetChapterNumber(self):
@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
         nb = Notabenoid2FB2('19980')
         self.assertEqual(nb.get_file_name(), 
                          'books/a_dance_with_dragons.fb2',
-                         'wrong book name receive')
+                         'wrong file name receive')
 
         
         

@@ -72,15 +72,18 @@ class FB2Creator():
         etree.SubElement(title, 'p').text = self.name.split('.')[0]
         section = etree.SubElement(body, 'section')
         s = etree.SubElement(section, 'section')
-        #TODO что то многовато глав получается, надо проследить чтобы лишних None не поступало от генератора
-        chap = 0
+        chap_name = None
         for d in self.gen:
             if d == self.eoc_sym:
                 s = etree.SubElement(section, 'section')
-                chap += 1
-                self.notifier('chapter ' + str(chap))
+                chap_name = None
+                self.notifier('chapter')
             else:
                 etree.SubElement(s, 'p').text = d
+                if not chap_name:
+                    chap_name = d
+                    #TODO Вставить названия глав для оглавления.
+                    #etree.SubElement(s, 'title').text = chap_name 
         
              
     def __create_header(self):

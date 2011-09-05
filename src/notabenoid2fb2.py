@@ -31,9 +31,11 @@ class Notabenoid2FB2():
         fb2.set_notifier(self.print_chapter)
         fb2.set_end_of_chapter_symbol(nb.end_of_chapter())
         self.fb2 = fb2
+        self.current_chapter = 0
     
     def print_chapter(self, s):
-        print(s)
+        self.current_chapter += 1
+        print(s + ' ' + str(self.current_chapter))
         
     def get_file_name(self):
         return self.fb2.get_file_name()

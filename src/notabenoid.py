@@ -8,6 +8,7 @@ Created on 26.08.2011
 from urllib import request
 from datetime import datetime
 import lxml.html
+from lxml.etree import tostring
 
 
 class Notabenoid():
@@ -85,11 +86,16 @@ class Notabenoid():
             form = page.forms[-1]
             page = lxml.html.parse(lxml.html.submit_form(form)).getroot()
             content = page.get_element_by_id(Notabenoid.CONTENT_ID)
+            i = 0
             for p in content:
+                text = tostring(p, encoding='unicode', method="text")
+                if 'Перевод с английского на русский' in text:
+                    continue
                 if Notabenoid.END_OF_CHAPTER == p.text:
+                    i += 1
                     yield self.end_of_chapter()
                     break
-                yield p.text
+                yield text
     
     def get_chapter(self, target_chap):
         '''
