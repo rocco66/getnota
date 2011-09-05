@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 01.09.2011
 
@@ -11,7 +12,7 @@ import sys
 
 class Notabenoid2FB2():
     '''
-    Class for creation FB2 from Motabenoid.
+    Class for creation FB2 from Notabenoid.
     '''
 
     def __init__(self, book_id):

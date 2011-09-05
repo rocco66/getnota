@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 26.08.2011
 
@@ -48,10 +49,17 @@ class Test(unittest.TestCase):
         
     def testCreateFB2(self):
         creator = FB2Creator('test')
-        creator.add_data('12345')
-        self.assertEqual(creator.create(), 
+        creator.set_generator((str(x) for x in range(5)))
+        self.assertEqual(creator.create_file(), 
                          True,
                          "Can't create FB2 file")
+        
+    def testGetFileName(self):
+        nb = Notabenoid('19980')
+        creator = FB2Creator(nb.get_book_name())
+        self.assertEqual(creator.get_file_name(), 
+                         'books/a_dance_with_dragons.fb2',
+                         'wrong book name receive')
 
         
         

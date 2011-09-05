@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 31.08.2011
 
@@ -25,6 +26,7 @@ class FB2Creator():
         self.book_name = FB2Creator.book_dir + '/' + self.name
         if not os.path.exists(self.book_dir):
             os.mkdir(self.book_dir)
+        self.eoc_sym = None 
         self.gen = None
         self.root = etree.Element('FictionBook')
         self.root.set("xmlns", "http://www.gribuser.ru/xml/fictionbook/2.0") 
@@ -47,6 +49,9 @@ class FB2Creator():
     def set_notifier(self, n):
         self.notifier = n    
     
+    def get_file_name(self):
+        return 'books/a_dance_with_dragons.fb2'
+    
     def __write_etree(self):
         '''
         Write xml to fb2 file.
@@ -67,7 +72,7 @@ class FB2Creator():
         etree.SubElement(title, 'p').text = self.name.split('.')[0]
         section = etree.SubElement(body, 'section')
         s = etree.SubElement(section, 'section')
-        #что то многовато глав получается, надо проследить чтобы лишних None не поступало от генератора
+        #TODO что то многовато глав получается, надо проследить чтобы лишних None не поступало от генератора
         chap = 0
         for d in self.gen:
             if d == self.eoc_sym:
