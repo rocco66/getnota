@@ -25,15 +25,23 @@ class Notabenoid2FB2():
         name = name.strip()
         name = name.replace(' ', '_')
         name = name.lower()
+        self.file_name = name 
         fb2 = FB2Creator(name)
         fb2.set_generator(nb.content())
         fb2.set_notifier(self.print_chapter)
         fb2.set_end_of_chapter_symbol(nb.end_of_chapter())
-        fb2.create_file()
+        self.fb2 = fb2
     
     def print_chapter(self, s):
         print(s)
+        
+    def get_file_name(self):
+        return self.fb2.get_file_name()
     
+    def generate(self):
+        self.fb2.create_file()
+        
     
 if __name__ == '__main__':
     n2fb2 = Notabenoid2FB2(sys.argv[1])
+    n2fb2.generate()

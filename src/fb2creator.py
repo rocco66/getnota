@@ -50,7 +50,7 @@ class FB2Creator():
         self.notifier = n    
     
     def get_file_name(self):
-        return 'books/a_dance_with_dragons.fb2'
+        return self.book_name
     
     def __write_etree(self):
         '''

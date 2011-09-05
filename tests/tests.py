@@ -7,6 +7,7 @@ Created on 26.08.2011
 import unittest
 from notabenoid import Notabenoid
 from fb2creator import FB2Creator
+from notabenoid2fb2 import Notabenoid2FB2
 
 
 class Test(unittest.TestCase):
@@ -55,9 +56,8 @@ class Test(unittest.TestCase):
                          "Can't create FB2 file")
         
     def testGetFileName(self):
-        nb = Notabenoid('19980')
-        creator = FB2Creator(nb.get_book_name())
-        self.assertEqual(creator.get_file_name(), 
+        nb = Notabenoid2FB2('19980')
+        self.assertEqual(nb.get_file_name(), 
                          'books/a_dance_with_dragons.fb2',
                          'wrong book name receive')
 
