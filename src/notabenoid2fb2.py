@@ -19,17 +19,17 @@ class Notabenoid2FB2():
         '''
         Constructor
         '''
-        nb = Notabenoid(book_id)
-        name = nb.get_book_name()
+        self.nb = Notabenoid(book_id)
+        name = self.nb.get_book_name()
         name = name.split('/')[0]
         name = name.strip()
         name = name.replace(' ', '_')
         name = name.lower()
         self.file_name = name 
         fb2 = FB2Creator(name)
-        fb2.set_generator(nb.content())
+        fb2.set_generator(self.nb.content())
         fb2.set_notifier(self.print_chapter)
-        fb2.set_end_of_chapter_symbol(nb.end_of_chapter())
+        fb2.set_end_of_chapter_symbol(self.nb.end_of_chapter())
         self.fb2 = fb2
         self.current_chapter = 0
     
@@ -42,6 +42,15 @@ class Notabenoid2FB2():
     
     def generate(self):
         self.fb2.create_file()
+        
+    def get_chapter_number(self):
+        '''
+        Return number of chapter in book.
+        '''
+        return self.nb.get_chapter_number()
+    
+    def set_notifier(self, n):
+        self.fb2.set_notifier(n)
         
     
 if __name__ == '__main__':

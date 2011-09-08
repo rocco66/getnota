@@ -6,7 +6,9 @@ Created on 05.09.2011
 '''
 
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 from PyQt4.QtCore import pyqtSlot
+from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtGui import QSizePolicy
 from notabenoid2fb2 import Notabenoid2FB2
 import sys
@@ -22,6 +24,8 @@ class QTGUI(QtGui.QWidget):
     SEARCH_BY_ID_NAME = 'Search by Name'
     SPEC_DILE_NAME_TEXT = 'Specify file name'
     CREATE_BUTTON_TEXT = 'Create book'
+
+    chapter_proc = QtCore.pyqtSignal(int)
 
     def __init__(self):
         '''
@@ -74,11 +78,30 @@ class QTGUI(QtGui.QWidget):
         
     @pyqtSlot(bool)
     def __create_book(self, b):
+        
+        class GetBookThread(QtCore.QThread):
+            def run(self):
+                self.nb.generate()
+        
         if self.search_id.isChecked():
             nb = Notabenoid2FB2(self.search_field.text())
-            nb.generate()
+            nb.set_notifier(self.__notifier)
+            progress = QtGui.QProgressBar(self)
+            progress.setMaximum(nb.get_chapter_number())
+            self.layout().addWidget(progress)
+            self.progress = progress
+            self.current_progress = 0
+            self.chapter_proc.connect(self.progress.setValue)
+            self.repaint()
+            gbt = GetBookThread()
+            gbt.nb = nb
+            gbt.start()
         else:
             pass
+        
+    def __notifier(self, s):
+        self.current_progress += 1
+        self.chapter_proc.emit(self.current_progress)
     
     
 if __name__ == '__main__':
