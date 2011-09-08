@@ -82,8 +82,8 @@ class FB2Creator():
                 etree.SubElement(s, 'p').text = d
                 if not chap_name:
                     chap_name = d
-                    #TODO Вставить названия глав для оглавления.
-                    #etree.SubElement(s, 'title').text = chap_name 
+#                    TODO Вставить названия глав для оглавления.
+#                    etree.SubElement(s, 'title').text = '<p>' + chap_name + '</p>' 
         
              
     def __create_header(self):
