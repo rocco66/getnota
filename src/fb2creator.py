@@ -32,6 +32,9 @@ class FB2Creator():
         self.root.set("xmlns", "http://www.gribuser.ru/xml/fictionbook/2.0") 
         
     def set_end_of_chapter_symbol(self, symbol):
+        '''
+        Get symbol of end chapter.
+        '''
         self.eoc_sym = symbol
         
     def create_file(self):
@@ -44,12 +47,21 @@ class FB2Creator():
         return self.__isValid()
     
     def set_generator(self, gen):
+        '''
+        Set data generator for book.
+        '''
         self.gen = gen
         
     def set_notifier(self, n):
+        '''
+        Set notifier, called by the end of each chapter.
+        '''
         self.notifier = n    
     
     def get_file_name(self):
+        '''
+        Returned file output name.
+        '''
         return self.book_name
     
     def __write_etree(self):
@@ -119,3 +131,4 @@ class FB2Creator():
         xmlschema = etree.XMLSchema(xmlschema_doc)
         book = etree.parse(open(self.book_name, mode='r'))
         return xmlschema.validate(book)
+    

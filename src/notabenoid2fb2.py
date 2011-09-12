@@ -25,7 +25,7 @@ class Notabenoid2FB2():
         name = name.strip()
         name = name.replace(' ', '_')
         name = name.lower()
-        self.file_name = name 
+        self.file_name = name
         fb2 = FB2Creator(name)
         fb2.set_generator(self.nb.content())
         fb2.set_notifier(self.print_chapter)
@@ -34,13 +34,22 @@ class Notabenoid2FB2():
         self.current_chapter = 0
     
     def print_chapter(self, s):
+        '''
+        Print log for each chapter.
+        '''
         self.current_chapter += 1
         print(s + ' ' + str(self.current_chapter))
         
     def get_file_name(self):
+        '''
+        Get output file name.
+        '''
         return self.fb2.get_file_name()
     
     def generate(self):
+        '''
+        Generate book.
+        '''
         self.fb2.create_file()
         
     def get_chapter_number(self):
@@ -50,9 +59,13 @@ class Notabenoid2FB2():
         return self.nb.get_chapter_number()
     
     def set_notifier(self, n):
+        '''
+        Set notifier called for each chapter.
+        '''
         self.fb2.set_notifier(n)
         
     
 if __name__ == '__main__':
     n2fb2 = Notabenoid2FB2(sys.argv[1])
     n2fb2.generate()
+    

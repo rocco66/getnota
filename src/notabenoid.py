@@ -9,6 +9,7 @@ from urllib import request
 from datetime import datetime
 import lxml.html
 from lxml.etree import tostring
+from lxml.html import parse
 
 
 class Notabenoid():
@@ -29,8 +30,10 @@ class Notabenoid():
         '''
         self.id = book_id
         url = Notabenoid.NB_URL + '/book/' + book_id
-        self.main_page = request.urlopen(url).read().decode()
-        self.main_page = lxml.html.document_fromstring(self.main_page)
+        self.main_page = parse(url).getroot()
+#        Sometimes is freeze while parsing from string. Why? - do not know
+#        self.main_page = request.urlopen(url).read().decode()
+#        self.main_page = lxml.html.document_fromstring(self.main_page)
         info = self.main_page.get_element_by_id(Notabenoid.BOOK_INFO_ID)
         self.book_name = info.find('h1').text
         self.img_url = info.find('img').attrib['src']
